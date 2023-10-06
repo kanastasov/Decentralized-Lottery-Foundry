@@ -67,6 +67,7 @@ contract Raffle {
 
     event EnteredRaffle(address indexed player);
     event WinnerPicked(address indexed winner);
+    event RaffleEnter(address indexed player);
 
     constructor(
         uint256 entranceFee,
@@ -88,14 +89,19 @@ contract Raffle {
         s_raffleState = RaffleState.OPEN;
     }
 
-    function enterRaffle() external payable {
-        // require(msg.value >= i_entranceFee, "Not enough ETH sent!");
+    function enterRaffle() public payable {
+        // require(msg.value >= i_entranceFee, "Not enough value sent");
+        // require(s_raffleState == RaffleState.OPEN, "Raffle is not open");
         if (msg.value < i_entranceFee) {
             revert Raffle_NotEnoughEthSend();
         }
+        if (s_raffleState != RaffleState.OPEN) {
+            revert Raffle_RaffleNotOpen();
+        }
         s_players.push(payable(msg.sender));
-
-        emit EnteredRaffle(msg.sender);
+        // Emit an event when we update a dynamic array or mapping
+        // Named events with the function name reversed
+        emit RaffleEnter(msg.sender);
     }
 
     /**
@@ -167,5 +173,9 @@ contract Raffle {
 
     function getRaffleStete() external view returns (RaffleState) {
         return s_raffleState;
+    }
+
+    function getPlayer(uint256 indexOfPlayer) external view returns (address) {
+        return s_players[indexOfPlayer];
     }
 }
