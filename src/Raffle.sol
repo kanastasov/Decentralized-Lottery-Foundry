@@ -164,4 +164,8 @@ contract Raffle {
     function getEntranceFee() external view returns (uint256) {
         return i_entranceFee;
     }
+
+    function getRaffleStete() external view returns (RaffleState) {
+        return s_raffleState;
+    }
 }
